@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import AboutSection from "./components/AboutSection";
 import FAQSection from "./components/FAQSection";
 import Footer from "./components/Footer";
+import ContactSection from "./components/ContactSection";
 
 function Home() {
   return (
@@ -19,6 +20,7 @@ function Home() {
       <PackageSection />
       <AboutSection />
       <FAQSection />
+      <ContactSection />
     </main>
     <Footer />
     </>

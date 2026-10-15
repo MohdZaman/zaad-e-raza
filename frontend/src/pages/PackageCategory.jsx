@@ -3,61 +3,78 @@ import { Link, useParams } from "react-router-dom";
 
 const packageData = {
   economy: {
-    name: "Economy",
+    title: "Economy Packages",
     subtitle: "Essential comfort, thoughtfully planned",
     description:
       "Explore our Economy pilgrimage options and find a journey suited to your needs.",
     packages: [
       {
-        id: "economy-umrah",
-        name: "Economy Umrah Package",
+        id: "december-umrah",
+        name: "December Umrah Package",
+        month: "December Departure",
         description:
-          "An Umrah travel option with essential arrangements and accommodation choices.",
-        features: [
-          "Accommodation options",
-          "Travel arrangements",
-          "Pilgrimage guidance",
-        ],
+          "Explore our December departure option for your Umrah journey.",
+        image:
+          "https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=900&q=80",
+      },
+      {
+        id: "january-umrah",
+        name: "January Umrah Package",
+        month: "January Departure",
+        description:
+          "Explore our January departure option for your Umrah journey.",
+        image:
+          "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=900&q=80",
       },
     ],
   },
 
   deluxe: {
-    name: "Deluxe",
-    subtitle: "A more comfortable journey",
+    title: "Deluxe Packages",
+    subtitle: "Added comfort for your sacred journey",
     description:
-      "Discover enhanced pilgrimage options designed around comfort and convenience.",
+      "Explore our Deluxe package options and upcoming departures.",
     packages: [
       {
-        id: "deluxe-umrah",
-        name: "Deluxe Umrah Package",
-        description:
-          "A pilgrimage option with enhanced comfort and travel arrangements.",
-        features: [
-          "Enhanced accommodation options",
-          "Travel coordination",
-          "Customer assistance",
-        ],
+        id: "december-deluxe-umrah",
+        name: "December Deluxe Umrah",
+        month: "December Departure",
+        description: "Explore the Deluxe option for December travel.",
+        image:
+          "https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=900&q=80",
+      },
+      {
+        id: "january-deluxe-umrah",
+        name: "January Deluxe Umrah",
+        month: "January Departure",
+        description: "Explore the Deluxe option for January travel.",
+        image:
+          "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=900&q=80",
       },
     ],
   },
 
   premium: {
-    name: "Premium",
-    subtitle: "A refined pilgrimage experience",
+    title: "Premium Packages",
+    subtitle: "Thoughtfully planned pilgrimage options",
     description:
-      "Explore personalised travel options for your sacred journey.",
+      "Explore our Premium package options and upcoming departures.",
     packages: [
       {
-        id: "premium-umrah",
-        name: "Premium Umrah Package",
-        description:
-          "A pilgrimage option focused on comfort and personalised assistance.",
-        features: [
-          "Premium accommodation options",
-          "Personalised travel assistance",
-          "Additional comfort options",
-        ],
+        id: "december-premium-umrah",
+        name: "December Premium Umrah",
+        month: "December Departure",
+        description: "Explore the Premium option for December travel.",
+        image:
+          "https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=900&q=80",
+      },
+      {
+        id: "january-premium-umrah",
+        name: "January Premium Umrah",
+        month: "January Departure",
+        description: "Explore the Premium option for January travel.",
+        image:
+          "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=900&q=80",
       },
     ],
   },
@@ -65,94 +82,85 @@ const packageData = {
 
 const PackageCategory = () => {
   const { category } = useParams();
-  const selectedCategory = packageData[category?.toLowerCase()];
+  const data = packageData[category?.toLowerCase()];
 
-  if (!selectedCategory) {
+  if (!data) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#faf8f2] px-5">
-        <div className="text-center">
-          <h1 className="font-serif text-3xl text-emerald-950">
-            Category not found
-          </h1>
-          <Link
-            to="/"
-            className="mt-5 inline-block rounded-full bg-emerald-950 px-6 py-3 text-white"
-          >
-            Return Home
-          </Link>
-        </div>
+      <main className="min-h-screen bg-[#faf8f2] px-5 pt-32 text-center">
+        <h1 className="font-serif text-3xl text-emerald-950">
+          Package category not found
+        </h1>
+        <Link to="/" className="mt-5 inline-block text-amber-700">
+          Return Home →
+        </Link>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#faf8f2] px-4 pb-16 pt-28 sm:px-6 sm:pb-24 lg:px-10">
+    <main className="min-h-screen bg-[#faf8f2] px-5 pb-16 pt-32 sm:px-8 sm:pb-24 lg:px-10">
       <div className="mx-auto max-w-7xl">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm text-emerald-800 hover:text-amber-700"
-        >
-          <span aria-hidden="true">←</span> Back to home
-        </Link>
+        <p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-700">
+          ZAAD-E-RAZA · OUR PACKAGES
+        </p>
 
-        <header className="mb-10 mt-8 max-w-2xl sm:mb-14">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-amber-700 sm:text-sm">
-            ZAAD-E-RAZA · OUR PACKAGES
-          </p>
+        <h1 className="mt-4 font-serif text-4xl text-emerald-950 sm:text-5xl">
+          {data.title}
+        </h1>
 
-          <h1 className="mt-4 font-serif text-4xl font-medium text-emerald-950 sm:text-5xl">
-            {selectedCategory.name} Packages
-          </h1>
+        <p className="mt-3 font-serif text-xl italic text-emerald-800">
+          {data.subtitle}
+        </p>
 
-          <p className="mt-3 font-serif text-xl italic text-emerald-800">
-            {selectedCategory.subtitle}
-          </p>
+        <p className="mt-5 max-w-2xl text-sm leading-7 text-gray-600 sm:text-base">
+          {data.description}
+        </p>
 
-          <p className="mt-5 text-sm leading-7 text-gray-600 sm:text-base">
-            {selectedCategory.description}
-          </p>
-        </header>
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {selectedCategory.packages.map((item) => (
+        {/* Monthly package cards */}
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3">
+          {data.packages.map((item) => (
             <article
               key={item.id}
-              className="flex flex-col rounded-2xl border border-emerald-950/10 bg-white p-5 shadow-sm sm:p-7"
+              className="overflow-hidden rounded-2xl border border-emerald-900/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-xl text-emerald-900">
-                ✦
+              <img
+                src={item.image}
+                alt={item.name}
+                loading="lazy"
+                className="h-48 w-full object-cover sm:h-52"
+              />
+
+              <div className="p-5 sm:p-6">
+                <span className="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800">
+                  {item.month}
+                </span>
+
+                <h2 className="mt-5 font-serif text-xl font-semibold text-emerald-950">
+                  {item.name}
+                </h2>
+
+                <p className="mt-3 text-sm leading-7 text-gray-600">
+                  {item.description}
+                </p>
+
+                <Link
+                  to={`/packages/${category}/${item.id}`}
+                  className="mt-6 flex w-full items-center justify-center rounded-full bg-emerald-950 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-900"
+                >
+                  View Package Details →
+                </Link>
               </div>
-
-              <h2 className="font-serif text-2xl font-semibold text-emerald-950">
-                {item.name}
-              </h2>
-
-              <p className="mt-3 text-sm leading-7 text-gray-600">
-                {item.description}
-              </p>
-
-              <ul className="mt-5 space-y-3">
-                {item.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-start gap-3 text-sm text-gray-700"
-                  >
-                    <span className="text-amber-700" aria-hidden="true">
-                      ✓
-                    </span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                to={`/packages/${category}/${item.id}`}
-                className="mt-7 inline-flex min-h-11 items-center justify-center rounded-full bg-emerald-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800"
-              >
-                View Package Details →
-              </Link>
             </article>
           ))}
+        </div>
+
+        <div className="mt-12">
+          <Link
+            to="/#packages"
+            className="text-sm font-medium text-emerald-800 hover:text-amber-700"
+          >
+            ← Back to all package categories
+          </Link>
         </div>
       </div>
     </main>
