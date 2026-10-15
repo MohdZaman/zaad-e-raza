@@ -8,14 +8,20 @@ import PackageCategory from "./pages/PackageCategory";
 import PackageDetails from "./pages/PackageDetails";
 import NotFound from "./pages/NotFound";
 import AboutSection from "./components/AboutSection";
+import FAQSection from "./components/FAQSection";
+import Footer from "./components/Footer";
 
 function Home() {
   return (
+    <>
     <main>
       <Hero />
       <PackageSection />
       <AboutSection />
+      <FAQSection />
     </main>
+    <Footer />
+    </>
   );
 }
 
