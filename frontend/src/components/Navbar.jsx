@@ -1,127 +1,153 @@
 
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const closeMenu = () => setMenuOpen(false);
+  // Scroll to a homepage section after navigation completes.
+  useEffect(() => {
+    if (!location.pathname.startsWith("/") || !location.hash) return;
 
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Packages", href: "/#packages" },
-    { name: "About Us", href: "/#about" },
-    { name: "Contact", href: "/#contact" },
+    const sectionId = location.hash.slice(1);
+    let attempts = 0;
+    let intervalId;
+
+    const scrollToSection = () => {
+      const section = document.getElementById(sectionId);
+
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+        clearInterval(intervalId);
+        return;
+      }
+
+      attempts += 1;
+
+      if (attempts >= 20) {
+        clearInterval(intervalId);
+      }
+    };
+
+    // Allow React to render the destination route first.
+    const timeoutId = setTimeout(() => {
+      scrollToSection();
+
+      intervalId = setInterval(scrollToSection, 100);
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(intervalId);
+    };
+  }, [location.pathname, location.hash]);
+
+  const goToSection = (sectionId) => {
+    setMenuOpen(false);
+
+    if (location.pathname === "/") {
+      const section = document.getElementById(sectionId);
+
+      if (section) {
+        window.history.replaceState(null, "", `/#${sectionId}`);
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        navigate(`/#${sectionId}`);
+      }
+    } else {
+      navigate(`/#${sectionId}`);
+    }
+  };
+
+  const links = [
+    { label: "Home", action: () => navigate("/") },
+    { label: "Packages", action: () => goToSection("packages") },
+    { label: "About Us", action: () => goToSection("about") },
+    { label: "FAQs", action: () => goToSection("faq") },
+    { label: "Contact", action: () => goToSection("contact") },
   ];
-
-  const linkClass =
-    "text-sm font-medium text-emerald-950 transition-colors duration-200 hover:text-amber-700";
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-900/10 bg-[#faf8f2] shadow-sm">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
-        {/* Brand */}
+      <nav
+        aria-label="Main navigation"
+        className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-10"
+      >
         <Link
           to="/"
-          onClick={closeMenu}
+          onClick={() => setMenuOpen(false)}
           className="shrink-0"
-          aria-label="ZAAD-E-RAZA Home"
         >
-          <span className="block font-serif text-2xl font-bold tracking-wide text-emerald-950 sm:text-3xl">
+          <span className="block font-serif text-xl font-bold tracking-wide text-emerald-950 sm:text-2xl">
             ZAAD-E-RAZA
           </span>
-
-          <span className="mt-1 block text-[9px] font-medium tracking-[0.35em] text-amber-600 sm:text-[10px]">
+          <span className="mt-1 block text-[8px] font-medium tracking-[0.25em] text-amber-700 sm:text-[10px]">
             YOUR SACRED JOURNEY
           </span>
         </Link>
 
-        {/* Desktop navigation */}
-        <div className="hidden items-center gap-7 md:flex lg:gap-10">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.href}
-              className={linkClass}
+        {/* Desktop links */}
+        <div className="hidden items-center gap-5 lg:flex xl:gap-7">
+          {links.map((link) => (
+            <button
+              key={link.label}
+              type="button"
+              onClick={link.action}
+              className="text-sm font-medium text-emerald-950 transition hover:text-amber-700"
             >
-              {link.name}
-            </Link>
+              {link.label}
+            </button>
           ))}
         </div>
 
-        {/* Desktop CTA */}
-        <Link
-          to="/#packages"
-          className="hidden rounded-full border border-amber-500 px-6 py-3 text-sm font-medium text-emerald-950 transition-all duration-300 hover:bg-emerald-950 hover:text-white md:inline-flex"
-        >
-          Explore Packages
-        </Link>
-
-        {/* Mobile menu button */}
         <button
           type="button"
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-900/15 text-emerald-950 transition hover:bg-emerald-900/5 md:hidden"
-          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          onClick={() => goToSection("packages")}
+          className="hidden rounded-full border border-amber-500 px-5 py-3 text-sm font-medium text-emerald-950 transition hover:bg-emerald-950 hover:text-white lg:inline-flex"
+        >
+          Explore Packages
+        </button>
+
+        {/* Mobile menu toggle */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((previous) => !previous)}
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-900/15 text-emerald-950 lg:hidden"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
         >
           {menuOpen ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.8}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18 18 6M6 6l12 12"
-              />
-            </svg>
+            <span className="text-2xl" aria-hidden="true">×</span>
           ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.8}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 7h16M4 12h16M4 17h16"
-              />
-            </svg>
+            <span className="text-2xl" aria-hidden="true">☰</span>
           )}
         </button>
       </nav>
 
-      {/* Mobile navigation */}
+      {/* Mobile menu */}
       {menuOpen && (
-        <div className="border-t border-emerald-900/10 bg-[#faf8f2] px-5 py-4 shadow-lg md:hidden">
+        <div className="border-t border-emerald-900/10 bg-[#faf8f2] px-5 py-4 shadow-lg lg:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.href}
-                onClick={closeMenu}
-                className="rounded-lg px-3 py-3 text-sm font-medium text-emerald-950 transition hover:bg-emerald-900/5 hover:text-amber-700"
+            {links.map((link) => (
+              <button
+                key={link.label}
+                type="button"
+                onClick={link.action}
+                className="w-full rounded-lg px-3 py-3 text-left text-sm font-medium text-emerald-950 transition hover:bg-emerald-900/5 hover:text-amber-700"
               >
-                {link.name}
-              </Link>
+                {link.label}
+              </button>
             ))}
 
-            <Link
-              to="/#packages"
-              onClick={closeMenu}
-              className="mt-2 rounded-full bg-emerald-950 px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-900"
+            <button
+              type="button"
+              onClick={() => goToSection("packages")}
+              className="mt-2 w-full rounded-full bg-emerald-950 px-5 py-3 text-sm font-semibold text-white"
             >
               Explore Packages
-            </Link>
+            </button>
           </div>
         </div>
       )}
