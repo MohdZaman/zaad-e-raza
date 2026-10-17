@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/enquiries";
+const API_URL = "https://zaad-e-raza-gve3.vercel.app/api/enquiries" || "http://localhost:5000/api/enquiries";
 
 const initialForm = {
   name: "",
