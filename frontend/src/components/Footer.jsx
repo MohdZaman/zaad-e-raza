@@ -4,9 +4,9 @@ const Footer = () => {
   // ADD YOUR REAL CONTACT DETAILS HERE
   // ==========================================
   const contact = {
-    email: "razazaman7861@gmail.com",
+    email: "zaaderaza@gmail.com",
     phone: "+91 8077725417",
-    whatsapp: "91 8077725417", // Country code + number, digits only
+    whatsapp: "91 7906575417", // Country code + number, digits only
     instagram: "https://www.instagram.com/zaaderaza/",
   };
 

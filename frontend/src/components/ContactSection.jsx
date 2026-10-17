@@ -1,6 +1,9 @@
 
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
+
+const API_URL = "http://localhost:5000/api/enquiries";
 
 const initialForm = {
   name: "",
@@ -21,7 +24,9 @@ const formatPackageName = (value) =>
 const ContactSection = () => {
   const location = useLocation();
   const [form, setForm] = useState(initialForm);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [enquiryId, setEnquiryId] = useState("");
 
   const params = new URLSearchParams(location.search);
   const selectedPackage = params.get("package");
@@ -34,7 +39,9 @@ const ContactSection = () => {
       packageType: selectedPackage,
     }));
 
-    setSubmitted(false);
+    setStatus("idle");
+    setErrorMessage("");
+    setEnquiryId("");
   }, [selectedPackage]);
 
   const updateField = (event) => {
@@ -45,15 +52,45 @@ const ContactSection = () => {
       [name]: value,
     }));
 
-    setSubmitted(false);
+    setStatus("idle");
+    setErrorMessage("");
+    setEnquiryId("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Frontend demo only. No enquiry is sent or saved yet.
-    console.log("Customer enquiry:", form);
-    setSubmitted(true);
+    setStatus("loading");
+    setErrorMessage("");
+    setEnquiryId("");
+
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      packageId: selectedPackage || "",
+      packageName: form.packageType,
+      travelDate: form.travelDate || null,
+      travellers: Number(form.travellers),
+      message: form.message.trim(),
+    };
+
+    try {
+      const response = await axios.post(API_URL, payload);
+
+      setStatus("success");
+      setEnquiryId(response.data.data?.id || "");
+      setForm(initialForm);
+    } catch (error) {
+      setStatus("error");
+
+      setErrorMessage(
+        error.response?.data?.message ||
+          (error.request
+            ? "Unable to connect to the server. Please try again."
+            : "Something went wrong. Please try again.")
+      );
+    }
   };
 
   const inputClass =
@@ -120,13 +157,30 @@ const ContactSection = () => {
             </div>
           )}
 
-          {submitted && (
+          {status === "success" && (
             <div
               role="status"
               className="mt-5 rounded-lg border border-emerald-700/20 bg-emerald-50 p-4 text-sm leading-6 text-emerald-900"
             >
-              Form validation passed, but your enquiry has not been sent or
-              saved yet. We'll enable submission after backend integration.
+              <p className="font-semibold">
+                Your enquiry has been submitted successfully!
+              </p>
+              <p>Thank you for contacting ZAAD-E-RAZA.</p>
+
+              {enquiryId && (
+                <p className="mt-1 break-all text-xs">
+                  Reference ID: {enquiryId}
+                </p>
+              )}
+            </div>
+          )}
+
+          {status === "error" && (
+            <div
+              role="alert"
+              className="mt-5 rounded-lg border border-red-700/20 bg-red-50 p-4 text-sm leading-6 text-red-800"
+            >
+              {errorMessage}
             </div>
           )}
 
@@ -179,7 +233,7 @@ const ContactSection = () => {
                 htmlFor="email"
                 className="text-sm font-medium text-emerald-950"
               >
-                Email address
+                Email address *
               </label>
               <input
                 id="email"
@@ -191,6 +245,7 @@ const ContactSection = () => {
                 autoComplete="email"
                 maxLength={254}
                 className={inputClass}
+                required
               />
             </div>
 
@@ -217,6 +272,7 @@ const ContactSection = () => {
                   <option value="Deluxe">Deluxe package</option>
                   <option value="Premium">Premium package</option>
                   <option value="Other">Other enquiry</option>
+
                   {selectedPackage && (
                     <option value={selectedPackage}>
                       {formatPackageName(selectedPackage)}
@@ -243,7 +299,8 @@ const ContactSection = () => {
                 >
                   {Array.from({ length: 20 }, (_, index) => (
                     <option key={index + 1} value={String(index + 1)}>
-                      {index + 1} {index === 0 ? "traveller" : "travellers"}
+                      {index + 1}{" "}
+                      {index === 0 ? "traveller" : "travellers"}
                     </option>
                   ))}
                   <option value="20+">More than 20</option>
@@ -290,13 +347,14 @@ const ContactSection = () => {
 
             <button
               type="submit"
-              className="w-full rounded-full bg-emerald-950 px-6 py-4 text-sm font-semibold text-white transition hover:bg-emerald-900 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:ring-offset-2"
+              disabled={status === "loading"}
+              className="w-full rounded-full bg-emerald-950 px-6 py-4 text-sm font-semibold text-white transition hover:bg-emerald-900 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Submit Enquiry →
+              {status === "loading" ? "Submitting..." : "Submit Enquiry →"}
             </button>
 
             <p className="text-center text-xs leading-5 text-gray-500">
-              Enquiry submission will be activated after backend integration.
+              Your enquiry will be submitted to ZAAD-E-RAZA.
             </p>
           </form>
         </div>
