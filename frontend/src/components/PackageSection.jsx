@@ -7,7 +7,7 @@ const packages = [
     name: "Economy",
     subtitle: "Comfort for every journey",
     description:
-      "Explore thoughtfully planned pilgrimage packages with essential comforts.",
+      "- Umrah Visa Assistance\n- Comfortable Hotel Accommodations\n- Meals\n- Local Transport Assistance\n- Ziyarat ",
     image:
       "https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80",
   },
