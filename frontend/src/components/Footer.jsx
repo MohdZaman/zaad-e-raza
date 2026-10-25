@@ -6,7 +6,7 @@ const Footer = () => {
   const contact = {
     email: "zaaderaza@gmail.com",
     phone: "+91 8077725417",
-    whatsapp: "91 7906575417", // Country code + number, digits only
+    whatsapp: "7906575417", // Country code + number, digits only
     instagram: "https://www.instagram.com/zaaderaza/",
   };
 

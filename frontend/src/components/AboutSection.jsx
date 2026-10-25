@@ -1,4 +1,7 @@
 
+import { useState } from "react";
+import EnquiryModal from "../components/EnquiryModel";
+
 const highlights = [
   {
     number: "01",
@@ -21,6 +24,8 @@ const highlights = [
 ];
 
 const AboutSection = () => {
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
+
   return (
     <>
       <section
@@ -69,13 +74,14 @@ const AboutSection = () => {
               and confidence.
             </p>
 
-            <a
-              href="/#contact"
-              className="mt-7 inline-flex items-center gap-2 rounded-full bg-emerald-950 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-900"
+            <button
+              type="button"
+              onClick={() => setEnquiryOpen(true)}
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-emerald-950 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-800"
             >
               Talk to Our Team
               <span aria-hidden="true">→</span>
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -120,6 +126,12 @@ const AboutSection = () => {
           </div>
         </div>
       </section>
+
+      {/* Reusable enquiry modal */}
+      <EnquiryModal
+        isOpen={enquiryOpen}
+        onClose={() => setEnquiryOpen(false)}
+      />
     </>
   );
 };

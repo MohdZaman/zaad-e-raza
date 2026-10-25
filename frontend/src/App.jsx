@@ -11,6 +11,7 @@ import AboutSection from "./components/AboutSection";
 import FAQSection from "./components/FAQSection";
 import Footer from "./components/Footer";
 import ContactSection from "./components/ContactSection";
+import PackageInfo from "./pages/PackageInfo";
 
 function Home() {
   return (
@@ -37,7 +38,7 @@ function App() {
 
         <Route
           path="/packages/:category"
-          element={<PackageCategory />}
+          element={<PackageInfo />}
         />
 
         <Route

@@ -7,66 +7,50 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Scroll to a homepage section after navigation completes.
   useEffect(() => {
-    if (!location.pathname.startsWith("/") || !location.hash) return;
+    if (location.pathname === "/" && location.hash) {
+      const sectionId = decodeURIComponent(location.hash.slice(1));
+      let attempts = 0;
 
-    const sectionId = location.hash.slice(1);
-    let attempts = 0;
-    let intervalId;
+      const intervalId = setInterval(() => {
+        const section = document.getElementById(sectionId);
 
-    const scrollToSection = () => {
-      const section = document.getElementById(sectionId);
+        if (section) {
+          clearInterval(intervalId);
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        } else if (++attempts >= 30) {
+          clearInterval(intervalId);
+        }
+      }, 100);
 
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth", block: "start" });
-        clearInterval(intervalId);
-        return;
-      }
+      return () => clearInterval(intervalId);
+    }
 
-      attempts += 1;
-
-      if (attempts >= 20) {
-        clearInterval(intervalId);
-      }
-    };
-
-    // Allow React to render the destination route first.
-    const timeoutId = setTimeout(() => {
-      scrollToSection();
-
-      intervalId = setInterval(scrollToSection, 100);
-    }, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-      clearInterval(intervalId);
-    };
+    // When opening a page without a section hash, start at the top.
+    if (!location.hash) {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
   }, [location.pathname, location.hash]);
+
+  const goHome = () => {
+    setMenuOpen(false);
+    navigate("/");
+  };
 
   const goToSection = (sectionId) => {
     setMenuOpen(false);
-
-    if (location.pathname === "/") {
-      const section = document.getElementById(sectionId);
-
-      if (section) {
-        window.history.replaceState(null, "", `/#${sectionId}`);
-        section.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        navigate(`/#${sectionId}`);
-      }
-    } else {
-      navigate(`/#${sectionId}`);
-    }
+    navigate(`/#${sectionId}`);
   };
 
   const links = [
-    { label: "Home", action: () => navigate("/") },
+    { label: "Home", action: goHome },
     { label: "Packages", action: () => goToSection("packages") },
     { label: "About Us", action: () => goToSection("about") },
     { label: "FAQs", action: () => goToSection("faq") },
-    { label: "Contact", action: () => goToSection("contact") },
+    { label: "Contact Us", action: () => goToSection("contact") },
   ];
 
   return (
@@ -88,7 +72,6 @@ const Navbar = () => {
           </span>
         </Link>
 
-        {/* Desktop links */}
         <div className="hidden items-center gap-5 lg:flex xl:gap-7">
           {links.map((link) => (
             <button
@@ -110,7 +93,6 @@ const Navbar = () => {
           Explore Packages
         </button>
 
-        {/* Mobile menu toggle */}
         <button
           type="button"
           onClick={() => setMenuOpen((previous) => !previous)}
@@ -126,7 +108,6 @@ const Navbar = () => {
         </button>
       </nav>
 
-      {/* Mobile menu */}
       {menuOpen && (
         <div className="border-t border-emerald-900/10 bg-[#faf8f2] px-5 py-4 shadow-lg lg:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-1">
